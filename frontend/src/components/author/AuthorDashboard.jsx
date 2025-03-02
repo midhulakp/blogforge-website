@@ -54,29 +54,13 @@ const AuthorDashboard = () => {
         setError(null);
         setLoading(true);
 
-        // Get all blogs for stats since /blog/stats endpoint doesn't exist
-        const blogsResponse = await api.get('/blog');
+        // **CHANGED API CALLS HERE:**
+        const statsResponse = await api.get('/author/dashboard/stats'); // Get stats from author-specific endpoint
+        const recentBlogsResponse = await api.get('/author/dashboard/recent-blogs'); // Get recent blogs from author-specific endpoint
 
         if (mounted) {
-          // Calculate stats from blogs array
-          const blogs = blogsResponse.data?.blogs || [];
-          const stats = blogs.reduce((acc, blog) => {
-            return {
-              totalBlogs: acc.totalBlogs + 1,
-              totalViews: acc.totalViews + (blog.views || 0),
-              totalLikes: acc.totalLikes + (blog.likes?.length || 0),
-              totalComments: acc.totalComments + (blog.comments?.length || 0)
-            };
-          }, {
-            totalBlogs: 0,
-            totalViews: 0,
-            totalLikes: 0,
-            totalComments: 0
-          });
-
-          setStats(stats);
-          // Use most recent blogs for the recent blogs section
-          setRecentBlogs(blogs.slice(0, 5)); // Show last 5 blogs
+          setStats(statsResponse.data); // Stats are directly returned now
+          setRecentBlogs(recentBlogsResponse.data); // Recent blogs are directly returned now
         }
       } catch (err) {
         if (mounted) {
@@ -84,12 +68,7 @@ const AuthorDashboard = () => {
           setError(err.response?.data?.message || 'Failed to load dashboard data');
 
           // Reset states on error
-          setStats({
-            totalBlogs: 0,
-            totalViews: 0,
-            totalLikes: 0,
-            totalComments: 0
-          });
+          setStats({ /* ... */ });
           setRecentBlogs([]);
         }
       } finally {
@@ -105,6 +84,7 @@ const AuthorDashboard = () => {
       mounted = false;
     };
   }, []);
+
 
   if (loading) {
     return (
