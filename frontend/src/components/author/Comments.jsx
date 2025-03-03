@@ -29,20 +29,11 @@ const Comments = () => {
     const fetchComments = async () => {
       try {
         setLoading(true);
-        const response = await api.get('/blog');
-        
+        // **CHANGED API CALL HERE:**
+        const response = await api.get('/author/comments'); // Fetch author's comments from author-specific endpoint
+
         if (mounted) {
-          const allComments = response.data.blogs.reduce((acc, blog) => {
-            const blogComments = blog.comments.map(comment => ({
-              ...comment,
-              blogTitle: blog.title,
-              blogSlug: blog.slug
-            }));
-            return [...acc, ...blogComments];
-          }, []);
-          
-          allComments.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-          setComments(allComments);
+          setComments(response.data); // Comments are directly returned now
         }
       } catch (err) {
         if (mounted) {

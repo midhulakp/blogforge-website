@@ -2,6 +2,7 @@ import express from "express";
 import db from "./config/db.js";
 import userRoutes from "./routes/userRoutes.js";
 import blogRoutes from "./routes/blogRoutes.js";
+import authorRoutes from "./routes/authorRoutes.js";
 import {rateLimit} from 'express-rate-limit'
 import helmet from 'helmet';
 import cors from 'cors';
@@ -27,6 +28,7 @@ app.use(express.json());
 app.use("/api/user", userRoutes);
 app.use("/api/blog", blogRoutes);
 app.use("/api/category",categoryRouter)
+app.use('/api/author', authorRoutes);
 
 //global error handler
 app.use(errorMiddleware);

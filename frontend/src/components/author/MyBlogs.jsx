@@ -30,8 +30,9 @@ const MyBlogs = () => {
 
   const fetchBlogs = async () => {
     try {
-      const { data } = await api.get('/blog');
-      setBlogs(data.blogs);
+      // **CHANGED API CALL HERE:**
+      const { data } = await api.get('/author/blogs'); // Fetch author's blogs from author-specific endpoint
+      setBlogs(data); // Directly use the blogs array returned
     } catch (error) {
       console.error('Error fetching blogs:', error);
     } finally {
